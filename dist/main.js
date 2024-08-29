@@ -16,7 +16,7 @@
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nclass Ship {\r\n  constructor(length) {\r\n    this.length = length;\r\n    this.hits = 0;\r\n    this.sunk = false;\r\n  }\r\n}\r\n\r\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Ship);\r\n\n\n//# sourceURL=webpack://odin_battleship/./src/classes/ship.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\nclass Ship {\n  constructor(length) {\n    this.length = length;\n    this.hits = 0;\n    this.coordinates = [];\n    this.sunk = false;\n  }\n  hit() {\n    this.hits += 1;\n    if (this.hits >= this.length) this.sunk = true;\n  }\n  isSunk() {\n    return this.sunk;\n  }\n}\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Ship);\n\n//# sourceURL=webpack://odin_battleship/./src/classes/ship.js?");
 
 /***/ }),
 
@@ -26,7 +26,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _classes_ship__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./classes/ship */ \"./src/classes/ship.js\");\n\r\n\r\nconst ship = new _classes_ship__WEBPACK_IMPORTED_MODULE_0__[\"default\"](5);\r\nconsole.log(ship);\r\n\n\n//# sourceURL=webpack://odin_battleship/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _classes_ship__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./classes/ship */ \"./src/classes/ship.js\");\n\nconst ship = new _classes_ship__WEBPACK_IMPORTED_MODULE_0__[\"default\"](5);\nconsole.log(ship);\n\n//# sourceURL=webpack://odin_battleship/./src/index.js?");
 
 /***/ })
 

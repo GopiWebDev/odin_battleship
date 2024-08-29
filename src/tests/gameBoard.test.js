@@ -1,18 +1,19 @@
 import GameBoard from '../classes/gameBoard';
+import Ship from '../classes/ship';
 
 describe('testing gameboard', () => {
   const gameboard = new GameBoard();
 
-  it('should return 0', () => {
-    expect(gameboard.board[0][0]).toBe(0);
+  it('should return null', () => {
+    expect(gameboard.board[0][0]).toBeNull();
   });
 
-  it('should return 1', () => {
-    expect(gameboard.board[0][1]).toBe(1);
+  it('should return null', () => {
+    expect(gameboard.board[0][1]).toBeNull();
   });
 
-  it('should return 9', () => {
-    expect(gameboard.board[0][9]).toBe(9);
+  it('should return null', () => {
+    expect(gameboard.board[0][9]).toBeNull();
   });
 
   it('should return length of 10', () => {
@@ -23,5 +24,69 @@ describe('testing gameboard', () => {
     gameboard.board.forEach((row) => {
       expect(row.length).toBe(10);
     });
+  });
+});
+
+describe('testing ship placements', () => {
+  it('should place ship horizontally on board', () => {
+    const grid = new GameBoard();
+    const ship = new Ship(4);
+    grid.placeShips(ship, 0, 0, 'horizontal');
+    expect(ship.coordinates).toEqual([
+      [0, 0],
+      [0, 1],
+      [0, 2],
+      [0, 3],
+    ]);
+  });
+
+  it('should place the ship vertically', () => {
+    const grid = new GameBoard();
+    const ship = new Ship(4);
+    grid.placeShips(ship, 0, 0, 'vertical');
+    expect(ship.coordinates).toEqual([
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [3, 0],
+    ]);
+  });
+
+  it('ship should not overlap another ship', () => {
+    const grid = new GameBoard();
+    const ship = new Ship(4);
+    const secondShip = new Ship(5);
+    grid.placeShips(ship, 0, 0, 'vertical');
+    expect(grid.placeShips(secondShip, 2, 0, 'vertical')).toBeFalsy();
+  });
+
+  it('should not go out of board', () => {
+    const grid = new GameBoard();
+    const ship = new Ship(5);
+    expect(grid.placeShips(ship, 7, 6, 'horizontal')).toBeFalsy();
+  });
+
+  it('should place ship on the board', () => {
+    const board = new GameBoard();
+    const ship = new Ship(3);
+    board.placeShips(ship, 0, 0, 'horizontal');
+    expect(board.board[0][0]).toBe(ship);
+  });
+});
+
+describe('testing attacks', () => {
+  it('should miss if no ship is present', () => {
+    const board = new GameBoard();
+    const ship = new Ship(3);
+    board.placeShips(ship, 0, 0, 'horizontal');
+    expect(board.receiveAttack(1, 0)).toBe('Miss');
+  });
+
+  it('should hit if ship is present and increase the hits', () => {
+    const board = new GameBoard();
+    const ship = new Ship(3);
+    board.placeShips(ship, 0, 0, 'horizontal');
+    board.receiveAttack(0, 0);
+    expect(ship.hits).toBe(1);
   });
 });

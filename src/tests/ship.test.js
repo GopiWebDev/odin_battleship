@@ -13,4 +13,9 @@ describe('testing the ship class', () => {
     newShip.hit();
     expect(newShip.isSunk()).toBe(true);
   });
+
+  it('should return length 5', () => {
+    const newShip = new Ship(5);
+    expect(newShip.length).toBe(5);
+  });
 });
