@@ -87,6 +87,49 @@ describe('testing attacks', () => {
     const ship = new Ship(3);
     board.placeShips(ship, 0, 0, 'horizontal');
     board.receiveAttack(0, 0);
-    expect(ship.hits).toBe(1);
+    board.receiveAttack(0, 1);
+    expect(ship.hits).toBe(2);
+  });
+
+  it('should mark miss if no ships were present', () => {
+    const board = new GameBoard();
+    const ship = new Ship(3);
+    board.placeShips(ship, 0, 0, 'horizontal');
+    expect(board.receiveAttack(6, 5)).toBe('Miss');
+  });
+
+  it('should return false if the coordinate has been already hit', () => {
+    const board = new GameBoard();
+    const ship = new Ship(3);
+    board.placeShips(ship, 0, 0, 'horizontal');
+    board.receiveAttack(6, 5);
+    expect(board.receiveAttack(6, 5)).toBeFalsy();
+  });
+
+  it('should return false if all ships are not sunk', () => {
+    const board = new GameBoard();
+    const ship = new Ship(3);
+    board.placeShips(ship, 0, 0, 'horizontal');
+    board.receiveAttack(0, 0);
+    board.receiveAttack(0, 1);
+    board.receiveAttack(0, 2);
+    expect(board.isAllShipsSunk()).toBeFalsy();
+  });
+
+  it('should return true if all ships are sunk', () => {
+    const board = new GameBoard();
+    const ship = new Ship(3);
+    board.placeShips(ship, 0, 0, 'horizontal');
+    board.receiveAttack(0, 0);
+    board.receiveAttack(0, 1);
+    board.receiveAttack(0, 2);
+    board.ships.forEach((ship) => {
+      ship.hit();
+      ship.hit();
+      ship.hit();
+      ship.hit();
+      ship.hit();
+    });
+    expect(board.isAllShipsSunk()).toBeTruthy();
   });
 });

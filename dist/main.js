@@ -10,6 +10,16 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/classes/gameBoard.js":
+/*!**********************************!*\
+  !*** ./src/classes/gameBoard.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony import */ var _ship__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ship */ \"./src/classes/ship.js\");\n\nclass GameBoard {\n  constructor() {\n    // creating the 10 x 10 board\n    // populated the board with 10 arrays consisting 10 null inside each array\n    this.board = new Array(10).fill().map(() => new Array(10).fill(null));\n    this.ships = [];\n  }\n  placeShips(ship, startRow, startCol, orientation) {\n    this.ships.push(ship);\n    if (this.isValidPlacement(ship, startRow, startCol, orientation) && !this.checkOverlap(ship, startRow, startCol, orientation)) {\n      let coordinates = [];\n      if (orientation === 'horizontal') {\n        for (let i = 0; i < ship.length; i++) {\n          this.board[startRow][startCol + i] = ship;\n          coordinates.push([startRow, startCol + i]);\n        }\n      } else if (orientation === 'vertical') {\n        for (let i = 0; i < ship.length; i++) {\n          this.board[startRow + i][startCol] = ship;\n          coordinates.push([startRow + i, startCol]);\n        }\n      }\n      ship.coordinates = coordinates;\n      return true;\n    } else {\n      return false;\n    }\n  }\n  isValidPlacement(ship, startRow, startCol, orientation) {\n    if (orientation === 'horizontal') {\n      return startCol + ship.length <= this.board[0].length;\n    } else if (orientation === 'vertical') {\n      return startRow + ship.length <= this.board.length;\n    }\n    return false;\n  }\n  checkOverlap(ship, startRow, startCol, orientation) {\n    if (orientation === 'horizontal') {\n      for (let i = startCol; i < startCol + ship.length; i++) {\n        if (this.board[startRow][i] !== null) {\n          return true;\n        }\n      }\n    } else if (orientation === 'vertical') {\n      for (let i = startRow; i < startRow + ship.length; i++) {\n        if (this.board[i][startCol] !== null) {\n          return true;\n        }\n      }\n    }\n    return false;\n  }\n  receiveAttack(row, col) {\n    if (this.board[row][col] === 'O' || this.board[row][col] === 'X') {\n      return false;\n    }\n    let cell = this.board[row][col];\n    if (cell !== null) {\n      this.board[row][col] = 'X';\n      let shipIndex = this.getShipCoordinates(row, col);\n      if (shipIndex !== -1) {\n        let ship = this.ships[shipIndex];\n        ship.hit();\n        if (ship.isSunk()) {\n          return 'Sunk';\n        } else {\n          return 'Hit';\n        }\n      } else {\n        return false;\n      }\n    }\n    this.board[row][col] = 'O';\n    return 'Miss';\n  }\n  getShipCoordinates(row, col) {\n    for (let i = 0; i < this.ships.length; i++) {\n      let ship = this.ships[i];\n      if (ship.coordinates.some(coordinate => coordinate[0] === row && coordinate[1] === col)) {\n        return i;\n      }\n    }\n    return -1;\n  }\n}\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GameBoard);\n\n//# sourceURL=webpack://odin_battleship/./src/classes/gameBoard.js?");
+
+/***/ }),
+
 /***/ "./src/classes/ship.js":
 /*!*****************************!*\
   !*** ./src/classes/ship.js ***!
@@ -26,7 +36,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _classes_ship__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./classes/ship */ \"./src/classes/ship.js\");\n\nconst ship = new _classes_ship__WEBPACK_IMPORTED_MODULE_0__[\"default\"](5);\nconsole.log(ship);\n\n//# sourceURL=webpack://odin_battleship/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _classes_ship__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./classes/ship */ \"./src/classes/ship.js\");\n/* harmony import */ var _classes_gameBoard__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./classes/gameBoard */ \"./src/classes/gameBoard.js\");\n\n\nconst board = new _classes_gameBoard__WEBPACK_IMPORTED_MODULE_1__[\"default\"]();\nconst ship = new _classes_ship__WEBPACK_IMPORTED_MODULE_0__[\"default\"](5);\nboard.placeShips(ship, 0, 0, 'horizontal');\nboard.receiveAttack(0, 0);\nconsole.log(ship.hits);\n\n// board.receiveAttack(0, 0);\n\n//# sourceURL=webpack://odin_battleship/./src/index.js?");
 
 /***/ })
 
