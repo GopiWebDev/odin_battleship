@@ -5,14 +5,11 @@ class GameBoard {
   constructor() {
     // creates a 10x10 board with null inside it
     this.board = new Array(10).fill().map(() => new Array(10).fill(null));
+    this.ships = this.initializeShips();
+  }
 
-    const carrier = new Ship(5);
-    const battleship = new Ship(4);
-    const destroyer = new Ship(3);
-    const submarine = new Ship(3);
-    const patrolBoat = new Ship(2);
-
-    this.ships = [carrier, battleship, destroyer, submarine, patrolBoat];
+  initializeShips() {
+    return [new Ship(5), new Ship(4), new Ship(3), new Ship(3), new Ship(2)];
   }
 
   // function to place the ships on the desired coordinates
@@ -22,7 +19,7 @@ class GameBoard {
       this.isValidPlacement(ship, startRow, startCol, orientation) &&
       !this.checkOverlap(ship, startRow, startCol, orientation)
     ) {
-      let coordinates = [];
+      const coordinates = [];
 
       if (orientation === 'horizontal') {
         for (let i = 0; i < ship.length; i++) {
@@ -37,11 +34,9 @@ class GameBoard {
       }
 
       ship.coordinates = coordinates;
-      this.ships.push(ship);
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   // checks if the coordinates are valid according to ships length
@@ -78,21 +73,22 @@ class GameBoard {
           return true;
         }
       }
+    } else {
+      // returns false if no overalapping is found
+      return false;
     }
-    // returns false if no overalapping is found
-    return false;
   }
 
   // receive attack takes a coordinate of row and col
   receiveAttack(row, col) {
+    // cell is the target location on the board
+    let cell = this.board[row][col];
     // Miss = O, Hit = X
     // checks if it's already hit of miss and returns false if any one is true
-    if (this.board[row][col] === 'O' || this.board[row][col] === 'X') {
+    if (cell === 'O' || cell === 'X') {
       return false;
     }
 
-    // cell is the target location on the board
-    let cell = this.board[row][col];
     // if cell is not null means there is a ship present in that place
     if (cell !== null) {
       // marks the location as hit
@@ -108,7 +104,7 @@ class GameBoard {
         // checks if the ship is sunk
         if (ship.isSunk()) {
           // returns sunk if true
-          return 'Sunk';
+          return 'Sunk';  
         } else {
           // else returns hit
           return 'Hit';

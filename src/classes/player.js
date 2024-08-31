@@ -16,8 +16,10 @@ class Player {
   randomAttack(opponent) {
     // works only if it's a computer
     if (this.isComputer) {
-      let row = Math.floor(Math.random() * 10);
-      let col = Math.floor(Math.random() * 10);
+      let row, col;
+
+      row = Math.floor(Math.random() * 10);
+      col = Math.floor(Math.random() * 10);
       return this.attack(opponent, row, col);
     }
   }
