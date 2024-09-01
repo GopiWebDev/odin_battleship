@@ -82,7 +82,6 @@ describe('testing attacks', () => {
     expect(board.receiveAttack(1, 0)).toBe('Miss');
   });
 
-
   // this test fails
   it('should hit if ship is present and increase the hits', () => {
     const board = new GameBoard();
@@ -109,7 +108,7 @@ describe('testing attacks', () => {
     const ship = new Ship(3);
     board.placeShips(ship, 0, 0, 'horizontal');
     board.receiveAttack(6, 5);
-    expect(board.receiveAttack(6, 5)).toBeFalsy();
+    expect(board.receiveAttack(6, 5)).toBe('Already Attacked');
   });
 
   it('should return false if all ships are not sunk', () => {

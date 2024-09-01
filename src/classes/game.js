@@ -46,8 +46,11 @@ class Game {
       } else {
         this.handlePostAttack();
       }
+
+      return result;
     } else {
       console.log('Invalid move. Please try again.');
+      return 'Invalid Move';
     }
   }
 

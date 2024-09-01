@@ -4,16 +4,11 @@ import Ship from './ship';
 class GameBoard {
   constructor() {
     this.board = new Array(10).fill().map(() => new Array(10).fill(null));
-    this.ships = this.initializeShips() || [];
+    this.ships = this.initializeShips();
   }
 
   initializeShips() {
     return [new Ship(5), new Ship(4), new Ship(3), new Ship(3), new Ship(2)];
-  }
-
-  clearShips() {
-    this.ships = [];
-    this.board = new Array(10).fill().map(() => new Array(10).fill(null));
   }
 
   placeShips(ship, startRow, startCol, orientation) {
@@ -70,31 +65,47 @@ class GameBoard {
   receiveAttack(row, col) {
     let cell = this.board[row][col];
 
-    if (cell === 'O' || cell === 'X') {
-      return false;
-    }
+    // if (cell === 'O' || cell === 'X') {
+    //   return false;
+    // }
 
-    if (cell !== null) {
+    // if (cell !== null) {
+    //   this.board[row][col] = 'X'; // Mark as hit
+    //   let shipIndex = this.getShipCoordinates(row, col);
+
+    //   if (shipIndex !== -1) {
+    //     let ship = this.ships[shipIndex];
+    //     ship.hit();
+
+    //     if (ship.isSunk()) {
+    //       return 'Sunk';
+    //     } else {
+    //       return 'Hit';
+    //     }
+    //   } else {
+    //     return false;
+    //   }
+    // }
+
+    // this.board[row][col] = 'O';
+
+    // return 'Miss';
+
+    if (cell instanceof Ship) {
+      cell.hit();
       this.board[row][col] = 'X'; // Mark as hit
-      let shipIndex = this.getShipCoordinates(row, col);
 
-      if (shipIndex !== -1) {
-        let ship = this.ships[shipIndex];
-        ship.hit();
-
-        if (ship.isSunk()) {
-          return 'Sunk';
-        } else {
-          return 'Hit';
-        }
+      if (cell.isSunk()) {
+        return 'Sunk';
       } else {
-        return false;
+        return 'Hit';
       }
+    } else if (cell === null || cell === '') {
+      this.board[row][col] = 'O'; // Mark as miss
+      return 'Miss';
+    } else {
+      return 'Already Attacked';
     }
-
-    this.board[row][col] = 'O'; // Mark as miss
-
-    return 'Miss';
   }
 
   getShipCoordinates(row, col) {
