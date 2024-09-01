@@ -82,12 +82,18 @@ describe('testing attacks', () => {
     expect(board.receiveAttack(1, 0)).toBe('Miss');
   });
 
+
+  // this test fails
   it('should hit if ship is present and increase the hits', () => {
     const board = new GameBoard();
     const ship = new Ship(3);
     board.placeShips(ship, 0, 0, 'horizontal');
-    board.receiveAttack(0, 0);
-    board.receiveAttack(0, 1);
+
+    const result1 = board.receiveAttack(0, 0);
+    const result2 = board.receiveAttack(0, 1);
+
+    expect(result1).toBe('Hit');
+    expect(result2).toBe('Hit');
     expect(ship.hits).toBe(2);
   });
 
