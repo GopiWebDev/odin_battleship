@@ -108,13 +108,15 @@ describe('testing attacks', () => {
     const ship = new Ship(3);
     board.placeShips(ship, 0, 0, 'horizontal');
     board.receiveAttack(6, 5);
-    expect(board.receiveAttack(6, 5)).toBe('Already Attacked');
+    expect(board.receiveAttack(6, 5)).toBe('Already Hit');
   });
 
   it('should return false if all ships are not sunk', () => {
     const board = new GameBoard();
     const ship = new Ship(3);
+    const ship2 = new Ship(2);
     board.placeShips(ship, 0, 0, 'horizontal');
+    board.placeShips(ship2, 5, 0, 'horizontal');
     board.receiveAttack(0, 0);
     board.receiveAttack(0, 1);
     board.receiveAttack(0, 2);

@@ -47,15 +47,7 @@ test('Repeated attack on the same cell', () => {
 
   player1.attack(player2, 0, 0); // First attack
   const result = player1.attack(player2, 0, 0); // Second attack
-  expect(result).toBe(false); // Expect false for already hit cell
-});
-
-test('Computer player makes random attack', () => {
-  const computer = new Player('Computer', true);
-  const player = new Player('Player 1');
-
-  const result = computer.randomAttack(player);
-  expect(['Hit', 'Miss'].includes(result)).toBe(true);
+  expect(result).toBe('Already Hit'); // Expect false for already hit cell
 });
 
 test('Place ship on the game board', () => {

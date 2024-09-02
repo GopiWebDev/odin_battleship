@@ -13,12 +13,19 @@ class Ship {
 
   // increases the hits count and sets sunk to true if it's equal to the length of ship
   hit() {
-    if (!this.isSunk) this.hits += 1;
+    if (!this.sunk) {
+      this.hits += 1;
+      this.checkIfSunk();
+    }
   }
 
-  // returns the sunk
+  checkIfSunk() {
+    if (this.hits === this.length) {
+      this.sunk = true;
+    }
+  }
+
   isSunk() {
-    if (this.hits === this.length) this.sunk = true;
     return this.sunk;
   }
 }

@@ -14,13 +14,19 @@ class Player {
 
   // randomAttack generates random rows and col to attack
   randomAttack(opponent) {
-    // works only if it's a computer
     if (this.isComputer) {
       let row, col;
 
-      row = Math.floor(Math.random() * 10);
-      col = Math.floor(Math.random() * 10);
-      return this.attack(opponent, row, col);
+      do {
+        row = Math.floor(Math.random() * 10);
+        col = Math.floor(Math.random() * 10);
+      } while (
+        opponent.gameboard.board[row][col] === 'O' ||
+        opponent.gameboard.board[row][col] === 'X'
+      );
+
+      const result = opponent.gameboard.receiveAttack(row, col);
+      return [row, col, result];
     }
   }
 }

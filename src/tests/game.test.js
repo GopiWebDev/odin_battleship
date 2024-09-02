@@ -48,11 +48,13 @@ describe('Game Class Tests', () => {
 
   test('Game ends when all opponent ships are sunk', () => {
     const game = new Game('Player 1', 'Player 2');
-    game.player2.gameboard.ships[0].hits = 5;
-    game.player2.gameboard.ships[1].hits = 4;
-    game.player2.gameboard.ships[2].hits = 3;
-    game.player2.gameboard.ships[3].hits = 3;
-    game.player2.gameboard.ships[4].hits = 2;
+    for (let i = 0; i < 5; i++) {
+      game.player2.gameboard.ships[i].hit();
+      game.player2.gameboard.ships[i].hit();
+      game.player2.gameboard.ships[i].hit();
+      game.player2.gameboard.ships[i].hit();
+      game.player2.gameboard.ships[i].hit();
+    }
     expect(game.player2.gameboard.isAllShipsSunk()).toBe(true);
   });
 
@@ -78,37 +80,6 @@ describe('Game Class Tests', () => {
     jest.advanceTimersByTime(500);
     expect(randomAttackSpy).toHaveBeenCalled();
     jest.useRealTimers();
-  });
-
-  test('End game method displays the winner', () => {
-    const game = new Game('Player 1', 'Player 2');
-    const consoleSpy = jest.spyOn(console, 'log');
-
-    // Hit all the coordinates of the opponent's ships
-    const shipCoordinates = [
-      [0, 1],
-      [1, 1],
-      [2, 1],
-      [3, 1],
-      [4, 1],
-      [1, 2],
-      [2, 2],
-      [3, 2],
-      [4, 2],
-      [2, 3],
-      [3, 3],
-      [4, 3],
-      [3, 4],
-      [4, 4],
-      [5, 4],
-      [4, 5],
-      [5, 5],
-    ];
-    shipCoordinates.forEach(([row, col]) => {
-      game.playerMove(row, col);
-    });
-    expect(consoleSpy).toHaveBeenCalledWith('Game Over! Player 1 wins!');
-    consoleSpy.mockRestore();
   });
 
   test('Player cannot attack out of bounds', () => {

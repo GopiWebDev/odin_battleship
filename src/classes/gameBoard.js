@@ -4,11 +4,7 @@ import Ship from './ship';
 class GameBoard {
   constructor() {
     this.board = new Array(10).fill().map(() => new Array(10).fill(null));
-    this.ships = this.initializeShips();
-  }
-
-  initializeShips() {
-    return [new Ship(5), new Ship(4), new Ship(3), new Ship(3), new Ship(2)];
+    this.ships = [];  
   }
 
   placeShips(ship, startRow, startCol, orientation) {
@@ -31,6 +27,7 @@ class GameBoard {
       }
 
       ship.coordinates = coordinates;
+      this.ships.push(ship);
       return true;
     }
     return false;
@@ -63,49 +60,37 @@ class GameBoard {
   }
 
   receiveAttack(row, col) {
-    let cell = this.board[row][col];
-
-    // if (cell === 'O' || cell === 'X') {
-    //   return false;
-    // }
-
-    // if (cell !== null) {
-    //   this.board[row][col] = 'X'; // Mark as hit
-    //   let shipIndex = this.getShipCoordinates(row, col);
-
-    //   if (shipIndex !== -1) {
-    //     let ship = this.ships[shipIndex];
-    //     ship.hit();
-
-    //     if (ship.isSunk()) {
-    //       return 'Sunk';
-    //     } else {
-    //       return 'Hit';
-    //     }
-    //   } else {
-    //     return false;
-    //   }
-    // }
-
-    // this.board[row][col] = 'O';
-
-    // return 'Miss';
-
-    if (cell instanceof Ship) {
-      cell.hit();
-      this.board[row][col] = 'X'; // Mark as hit
-
-      if (cell.isSunk()) {
-        return 'Sunk';
-      } else {
-        return 'Hit';
-      }
-    } else if (cell === null || cell === '') {
-      this.board[row][col] = 'O'; // Mark as miss
-      return 'Miss';
-    } else {
-      return 'Already Attacked';
+    // Check if the cell has already been attacked
+    if (this.board[row][col] === 'O' || this.board[row][col] === 'X') {
+      return 'Already Hit';
     }
+
+    // If the cell contains a ship part (not null and not previously attacked)
+    if (
+      this.board[row][col] !== null &&
+      typeof this.board[row][col] === 'object'
+    ) {
+      // Assuming ship parts are objects
+      this.board[row][col] = 'X'; // Mark as hit
+      let shipIndex = this.getShipCoordinates(row, col);
+
+      if (shipIndex !== -1) {
+        let ship = this.ships[shipIndex];
+        ship.hit();
+
+        if (ship.isSunk()) {
+          return 'Sunk';
+        } else {
+          return 'Hit';
+        }
+      } else {
+        return false; // In case no ship is found at the coordinates
+      }
+    }
+
+    // If the cell is empty (null)
+    this.board[row][col] = 'O'; // Mark as miss
+    return 'Miss';
   }
 
   getShipCoordinates(row, col) {

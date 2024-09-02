@@ -2,12 +2,11 @@ import Player from './player';
 import Ship from './ship';
 
 class Game {
-  constructor(player1, player2) {
+  constructor(player1 = 'Player', player2 = 'Computer') {
     this.player1 = new Player(player1);
     this.player2 = new Player(player2, true);
     this.currentPlayer = this.player1;
 
-    // Example ship placements (adjust as needed)
     this.setupShips();
   }
 
@@ -61,10 +60,15 @@ class Game {
   handlePostAttack() {
     this.switchTurn();
     if (this.currentPlayer.isComputer) {
-      setTimeout(() => {
-        this.currentPlayer.randomAttack(this.getOpponent());
-        this.switchTurn(); // Ensure turn switches back after computer's attack
-      }, 500);
+      const [row, col, result] = this.currentPlayer.randomAttack(
+        this.getOpponent()
+      );
+      this.updateUI(row, col, result);
+      if (this.getOpponent().gameboard.isAllShipsSunk()) {
+        this.endGame(this.currentPlayer.name);
+      } else {
+        this.switchTurn();
+      }
     }
   }
 
