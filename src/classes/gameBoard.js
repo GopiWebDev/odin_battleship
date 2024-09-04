@@ -1,10 +1,7 @@
-// importing ship class from another file
-import Ship from './ship';
-
 class GameBoard {
   constructor() {
     this.board = new Array(10).fill().map(() => new Array(10).fill(null));
-    this.ships = [];  
+    this.ships = [];
   }
 
   placeShips(ship, startRow, startCol, orientation) {

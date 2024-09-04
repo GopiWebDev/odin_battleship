@@ -1,4 +1,3 @@
-// Ship class
 class Ship {
   // creating a new ship with length as parameter, remaining are default
   constructor(length) {

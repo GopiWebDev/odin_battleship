@@ -9,7 +9,6 @@ class Game {
 
     this.setupShips();
   }
-
   setupShips() {
     const ships = [
       new Ship(5),
@@ -19,14 +18,52 @@ class Game {
       new Ship(2),
     ];
 
+    const orientations = ['horizontal', 'vertical'];
+
     // Place ships for player1
-    for (let i = 0; i < ships.length; i++) {
-      this.player1.gameboard.placeShips(ships[i], i, i, 'horizontal');
+    for (let ship of ships) {
+      let placed = false;
+      while (!placed) {
+        const orientation =
+          orientations[Math.floor(Math.random() * orientations.length)];
+        const startRow = Math.floor(
+          Math.random() *
+            (10 - (orientation === 'horizontal' ? 0 : ship.length))
+        );
+        const startCol = Math.floor(
+          Math.random() * (10 - (orientation === 'vertical' ? 0 : ship.length))
+        );
+
+        placed = this.player1.gameboard.placeShips(
+          ship,
+          startRow,
+          startCol,
+          orientation
+        );
+      }
     }
 
     // Place ships for player2 (computer)
-    for (let i = 0; i < ships.length; i++) {
-      this.player2.gameboard.placeShips(ships[i], i, i + 1, 'vertical');
+    for (let ship of ships) {
+      let placed = false;
+      while (!placed) {
+        const orientation =
+          orientations[Math.floor(Math.random() * orientations.length)];
+        const startRow = Math.floor(
+          Math.random() *
+            (10 - (orientation === 'horizontal' ? 0 : ship.length))
+        );
+        const startCol = Math.floor(
+          Math.random() * (10 - (orientation === 'vertical' ? 0 : ship.length))
+        );
+
+        placed = this.player2.gameboard.placeShips(
+          ship,
+          startRow,
+          startCol,
+          orientation
+        );
+      }
     }
   }
 

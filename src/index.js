@@ -1,33 +1,69 @@
 import './styles/style.css';
-
-import Ship from './classes/ship';
 import Game from './classes/game';
-import renderBoard from './DOM/renderBoard';
-import GameBoard from './classes/gameBoard';
 
-renderBoard();
+function renderBoard(boardElement, gameboard) {
+  // Clear the board
+  boardElement.innerHTML = '';
 
-const game = new Game();
-game.playerMove(0, 1);
-game.playerMove(1, 1);
-game.playerMove(2, 1);
-game.playerMove(3, 1);
-game.playerMove(4, 1);
+  // Render each cell
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const cell = document.createElement('div');
+      cell.classList.add('divs');
 
-game.playerMove(1, 2);
-game.playerMove(2, 2);
-game.playerMove(3, 2);
-game.playerMove(4, 2);
+      const boardCell = gameboard.board[row][col];
 
-game.playerMove(2, 3);
-game.playerMove(3, 3);
-game.playerMove(4, 3);
+      if (boardCell === 'X') {
+        cell.classList.add('hit');
+      } else if (boardCell === 'O') {
+        cell.classList.add('miss');
+      } else if (boardCell !== null) {
+        if (boardElement.classList[0] === 'computer-board') {
+          cell.classList.add('divs');
+        }
+        cell.classList.add('ship');
+      }
 
-game.playerMove(3, 4);
-game.playerMove(4, 4);
+      // Attach event listener for player moves
+      if (boardElement.classList[0] === 'computer-board') {
+        cell.addEventListener('click', () => handlePlayerMove(row, col));
+      }
 
-game.playerMove(4, 5);
-game.playerMove(5, 5);
-game.playerMove(5, 4);
+      boardElement.appendChild(cell);
+    }
+  }
+}
 
-console.log(game.player2.gameboard.board);
+function handlePlayerMove(row, col) {
+  const result = game.playerMove(row, col);
+
+  // Re-render both boards after the move
+  renderBoard(document.querySelector('.player-board'), game.player1.gameboard);
+  renderBoard(
+    document.querySelector('.computer-board'),
+    game.player2.gameboard
+  );
+
+  if (result === 'Sunk') {
+    console.log('You sunk a ship!');
+  } else if (result === 'Hit') {
+    console.log('Hit!');
+  } else if (result === 'Miss') {
+    console.log('Miss!');
+  } else if ('Already Hit') {
+    
+  }
+
+  // Check if game over
+  if (game.player2.gameboard.isAllShipsSunk()) {
+    alert(`${game.currentPlayer.name} wins!`);
+  }
+}
+
+const playerName = document.querySelector('[data-player-name]');
+const name = prompt('ENTER YOUR NAME');
+playerName.innerText = name;
+
+const game = new Game('Player 1', 'Computer');
+renderBoard(document.querySelector('.player-board'), game.player1.gameboard);
+renderBoard(document.querySelector('.computer-board'), game.player2.gameboard);
