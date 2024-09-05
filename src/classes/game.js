@@ -8,10 +8,13 @@ class Game {
     this.player1 = new Player(player1);
     this.player2 = new Player(player2, true);
     this.currentPlayer = this.player1;
+    this.gameOver = false;
+    this.resultBox = resultBox || document.querySelector('.results');
 
-    this.setupShips();
+    this.setupShipsForBothPlayers();
   }
-  setupShips() {
+
+  setupShipsForBothPlayers() {
     const ships = [
       new Ship(5),
       new Ship(4),
@@ -20,9 +23,13 @@ class Game {
       new Ship(2),
     ];
 
+    this.placeShipsForPlayer(this.player1, ships);
+    this.placeShipsForPlayer(this.player2, ships);
+  }
+
+  placeShipsForPlayer(player, ships) {
     const orientations = ['horizontal', 'vertical'];
 
-    // Place ships for player1
     for (let ship of ships) {
       let placed = false;
       while (!placed) {
@@ -36,30 +43,7 @@ class Game {
           Math.random() * (10 - (orientation === 'vertical' ? 0 : ship.length))
         );
 
-        placed = this.player1.gameboard.placeShips(
-          ship,
-          startRow,
-          startCol,
-          orientation
-        );
-      }
-    }
-
-    // Place ships for player2 (computer)
-    for (let ship of ships) {
-      let placed = false;
-      while (!placed) {
-        const orientation =
-          orientations[Math.floor(Math.random() * orientations.length)];
-        const startRow = Math.floor(
-          Math.random() *
-            (10 - (orientation === 'horizontal' ? 0 : ship.length))
-        );
-        const startCol = Math.floor(
-          Math.random() * (10 - (orientation === 'vertical' ? 0 : ship.length))
-        );
-
-        placed = this.player2.gameboard.placeShips(
+        placed = player.gameboard.placeShips(
           ship,
           startRow,
           startCol,
@@ -70,17 +54,17 @@ class Game {
   }
 
   switchTurn() {
-    this.currentPlayer =
-      this.currentPlayer === this.player1 ? this.player2 : this.player1;
+    if (!this.gameOver) {
+      this.currentPlayer =
+        this.currentPlayer === this.player1 ? this.player2 : this.player1;
+    }
   }
 
   playerMove(row, col) {
+    if (this.gameOver) return;
+
     if (this.isValidMove(row, col)) {
       const result = this.currentPlayer.attack(this.getOpponent(), row, col);
-      if (result === 'Already Hit') {
-        this.updateUI(row, col, 'Already Hit');
-        return;
-      }
       this.updateUI(row, col, result);
 
       if (this.getOpponent().gameboard.isAllShipsSunk()) {
@@ -101,11 +85,16 @@ class Game {
   }
 
   handlePostAttack() {
+    if (this.gameOver) return;
+
     this.switchTurn();
+
     if (this.currentPlayer.isComputer) {
       const [row, col, result] = this.currentPlayer.randomAttack(
         this.getOpponent()
       );
+      this.updateUI(row, col, result);
+
       if (this.getOpponent().gameboard.isAllShipsSunk()) {
         this.endGame(this.currentPlayer.name);
       } else {
@@ -119,10 +108,15 @@ class Game {
   }
 
   updateUI(row, col, result) {
-    resultBox.innerText = `Attack at [${row}, ${col}] resulted in ${result}`;
+    if (this.resultBox) {
+      this.resultBox.innerText = `Attack at [${row}, ${col}] resulted in ${result}`;
+    } else {
+      resultBox.innerText = `Attack at [${row}, ${col}] resulted in ${result}`;
+    }
   }
 
   endGame(winnerName) {
+    this.gameOver = true;
     resultBox.innerText = `Game Over! ${winnerName} wins!`;
   }
 }

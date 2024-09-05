@@ -1,33 +1,42 @@
 class Ship {
-  // creating a new ship with length as parameter, remaining are default
+  /**
+   * Creates a new Ship object.
+   * @param {number} length - The length of the ship.
+   */
   constructor(length) {
     this.length = length;
-    // to count the hits and of the ship
-    this.hits = 0;
-    // location of the ship, first no denotes row and second denotes col
-    this.coordinates = [];
-    // checking if ship is sunlk
-    this.sunk = false;
+    this.hits = 0; // Number of hits received
+    this.coordinates = []; // Coordinates occupied by the ship
+    this.sunk = false; // Whether the ship is sunk
   }
 
-  // increases the hits count and sets sunk to true if it's equal to the length of ship
+  /**
+   * Increments the hit count and checks if the ship is sunk.
+   */
   hit() {
     if (!this.sunk) {
       this.hits += 1;
-      this.checkIfSunk();
+      this.#checkIfSunk(); // Private method to check if the ship is sunk
     }
   }
 
-  checkIfSunk() {
+  /**
+   * Checks if the ship has been sunk.
+   * @private
+   */
+  #checkIfSunk() {
     if (this.hits === this.length) {
       this.sunk = true;
     }
   }
 
+  /**
+   * Returns whether the ship is sunk.
+   * @returns {boolean} - True if the ship is sunk, otherwise false.
+   */
   isSunk() {
     return this.sunk;
   }
 }
 
-// exporting the class by default
 export default Ship;

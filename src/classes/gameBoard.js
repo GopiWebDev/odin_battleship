@@ -1,9 +1,17 @@
 class GameBoard {
   constructor() {
-    this.board = new Array(10).fill().map(() => new Array(10).fill(null));
+    this.board = new Array(10).fill(null).map(() => new Array(10).fill(null));
     this.ships = [];
   }
 
+  /**
+   * Places a ship on the board.
+   * @param {Ship} ship - The ship to place.
+   * @param {number} startRow - The starting row of the ship.
+   * @param {number} startCol - The starting column of the ship.
+   * @param {string} orientation - The orientation of the ship ('horizontal' or 'vertical').
+   * @returns {boolean} - Whether the ship was successfully placed.
+   */
   placeShips(ship, startRow, startCol, orientation) {
     if (
       this.isValidPlacement(ship, startRow, startCol, orientation) &&
@@ -11,16 +19,12 @@ class GameBoard {
     ) {
       const coordinates = [];
 
-      if (orientation === 'horizontal') {
-        for (let i = 0; i < ship.length; i++) {
-          this.board[startRow][startCol + i] = ship;
-          coordinates.push([startRow, startCol + i]);
-        }
-      } else if (orientation === 'vertical') {
-        for (let i = 0; i < ship.length; i++) {
-          this.board[startRow + i][startCol] = ship;
-          coordinates.push([startRow + i, startCol]);
-        }
+      for (let i = 0; i < ship.length; i++) {
+        const row = orientation === 'horizontal' ? startRow : startRow + i;
+        const col = orientation === 'vertical' ? startCol : startCol + i;
+
+        this.board[row][col] = ship;
+        coordinates.push([row, col]);
       }
 
       ship.coordinates = coordinates;
@@ -30,6 +34,14 @@ class GameBoard {
     return false;
   }
 
+  /**
+   * Checks if a ship can be placed at the given position.
+   * @param {Ship} ship - The ship to place.
+   * @param {number} startRow - The starting row of the ship.
+   * @param {number} startCol - The starting column of the ship.
+   * @param {string} orientation - The orientation of the ship ('horizontal' or 'vertical').
+   * @returns {boolean} - Whether the placement is valid.
+   */
   isValidPlacement(ship, startRow, startCol, orientation) {
     if (orientation === 'horizontal') {
       return startCol + ship.length <= this.board[0].length;
@@ -39,72 +51,73 @@ class GameBoard {
     return false;
   }
 
+  /**
+   * Checks if a ship overlaps with another ship on the board.
+   * @param {Ship} ship - The ship to check.
+   * @param {number} startRow - The starting row of the ship.
+   * @param {number} startCol - The starting column of the ship.
+   * @param {string} orientation - The orientation of the ship ('horizontal' or 'vertical').
+   * @returns {boolean} - Whether there is an overlap.
+   */
   checkOverlap(ship, startRow, startCol, orientation) {
-    if (orientation === 'horizontal') {
-      for (let i = startCol; i < startCol + ship.length; i++) {
-        if (this.board[startRow][i] !== null) {
-          return true;
-        }
-      }
-    } else if (orientation === 'vertical') {
-      for (let i = startRow; i < startRow + ship.length; i++) {
-        if (this.board[i][startCol] !== null) {
-          return true;
-        }
+    for (let i = 0; i < ship.length; i++) {
+      const row = orientation === 'horizontal' ? startRow : startRow + i;
+      const col = orientation === 'vertical' ? startCol : startCol + i;
+
+      if (this.board[row][col] !== null) {
+        return true;
       }
     }
     return false;
   }
 
+  /**
+   * Processes an attack on the board.
+   * @param {number} row - The row to attack.
+   * @param {number} col - The column to attack.
+   * @returns {string} - The result of the attack ('Hit', 'Miss', 'Already Hit', 'Sinking a ship').
+   */
   receiveAttack(row, col) {
     if (this.board[row][col] === 'O' || this.board[row][col] === 'X') {
       return 'Already Hit';
     }
 
-    if (
-      this.board[row][col] !== null &&
-      typeof this.board[row][col] === 'object'
-    ) {
-      this.board[row][col] = 'X'; // Mark as hit
-      let shipIndex = this.getShipCoordinates(row, col);
+    const cell = this.board[row][col];
+    if (cell !== null && typeof cell === 'object') {
+      const ship = cell;
+      ship.hit();
+      this.board[row][col] = 'X';
 
-      if (shipIndex !== -1) {
-        let ship = this.ships[shipIndex];
-        ship.hit();
-
-        if (ship.isSunk()) {
-          return 'Sinking a ship';
-        } else {
-          return 'Hit';
-        }
-      } else {
-        return false; // In case no ship is found at the coordinates
-      }
+      return ship.isSunk() ? 'Sinking a ship' : 'Hit';
     }
 
-    // If the cell is empty (null)
     this.board[row][col] = 'O'; // Mark as miss
     return 'Miss';
   }
 
+  /**
+   * Gets the index of the ship at the specified coordinates.
+   * @param {number} row - The row of the ship.
+   * @param {number} col - The column of the ship.
+   * @returns {number} - The index of the ship, or -1 if not found.
+   */
   getShipCoordinates(row, col) {
     for (let i = 0; i < this.ships.length; i++) {
-      let ship = this.ships[i];
-      if (
-        ship.coordinates.some(
-          (coordinate) => coordinate[0] === row && coordinate[1] === col
-        )
-      ) {
+      const ship = this.ships[i];
+      if (ship.coordinates.some(([r, c]) => r === row && c === col)) {
         return i;
       }
     }
     return -1;
   }
 
+  /**
+   * Checks if all ships on the board have been sunk.
+   * @returns {boolean} - Whether all ships are sunk.
+   */
   isAllShipsSunk() {
     return this.ships.every((ship) => ship.isSunk());
   }
 }
 
-// exporting the gameboard class by default
 export default GameBoard;

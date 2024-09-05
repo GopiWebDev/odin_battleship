@@ -2,12 +2,18 @@ import './styles/style.css';
 import Game from './classes/game';
 
 const playerName = document.querySelector('[data-player-name]');
+const playerBoardElement = document.querySelector('.player-board');
+const computerBoardElement = document.querySelector('.computer-board');
+const startBtn = document.querySelector('[data-start]');
+const restartBtn = document.querySelector('[data-restart]');
 
+// Initialize the game
+const game = new Game('Player', 'Computer');
+
+// Function to render the board
 function renderBoard(boardElement, gameboard) {
-  // Clear the board
-  boardElement.innerHTML = '';
+  boardElement.innerHTML = ''; // Clear the board
 
-  // Render each cell
   for (let row = 0; row < 10; row++) {
     for (let col = 0; col < 10; col++) {
       const cell = document.createElement('div');
@@ -20,15 +26,11 @@ function renderBoard(boardElement, gameboard) {
       } else if (boardCell === 'O') {
         cell.classList.add('miss');
       } else if (boardCell !== null) {
-        if (boardElement.classList[0] === 'computer-board') {
-          cell.classList.remove('ship');
-        } else {
-        }
         cell.classList.add('ship');
       }
 
       // Attach event listener for player moves
-      if (boardElement.classList[0] === 'computer-board') {
+      if (boardElement === computerBoardElement) {
         cell.addEventListener('click', () => handlePlayerMove(row, col));
       }
 
@@ -38,37 +40,39 @@ function renderBoard(boardElement, gameboard) {
 }
 
 function handlePlayerMove(row, col) {
+  if (game.currentPlayer.isComputer) return;
+
   const result = game.playerMove(row, col);
 
-  // Re-render both boards after the move
-  renderBoard(document.querySelector('.player-board'), game.player1.gameboard);
-  renderBoard(
-    document.querySelector('.computer-board'),
-    game.player2.gameboard
-  );
+  // Re-render boards after the move
+  renderBoard(playerBoardElement, game.player1.gameboard);
+  renderBoard(computerBoardElement, game.player2.gameboard);
 
-  // Check if game over
+  // Check for game end condition
   if (game.player2.gameboard.isAllShipsSunk()) {
     alert(`${playerName.innerText} wins!`);
+    removeClickListeners();
+    return;
+  }
+
+  if (game.player1.gameboard.isAllShipsSunk()) {
+    alert('Computer wins!');
+    removeClickListeners();
   }
 }
 
-const game = new Game('Player', 'Computer');
-const startBtn = document.querySelector('[data-start]');
+// Function to remove click listeners from the computer board
+function removeClickListeners() {
+  const cells = computerBoardElement.querySelectorAll('.divs');
+  cells.forEach((cell) => cell.replaceWith(cell.cloneNode(true))); // Remove event listeners
+}
 
+// Event listeners for buttons
 startBtn.addEventListener('click', () => {
-  renderBoard(document.querySelector('.player-board'), game.player1.gameboard);
-  renderBoard(
-    document.querySelector('.computer-board'),
-    game.player2.gameboard
-  );
+  renderBoard(playerBoardElement, game.player1.gameboard);
+  renderBoard(computerBoardElement, game.player2.gameboard);
 });
 
-const restartBtn = document.querySelector('[data-restart]');
 restartBtn.addEventListener('click', () => {
-  renderBoard(document.querySelector('.player-board'), game.player1.gameboard);
-  renderBoard(
-    document.querySelector('.computer-board'),
-    game.player2.gameboard
-  );
+  location.reload();
 });
