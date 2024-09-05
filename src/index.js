@@ -1,6 +1,8 @@
 import './styles/style.css';
 import Game from './classes/game';
 
+const playerName = document.querySelector('[data-player-name]');
+
 function renderBoard(boardElement, gameboard) {
   // Clear the board
   boardElement.innerHTML = '';
@@ -19,7 +21,8 @@ function renderBoard(boardElement, gameboard) {
         cell.classList.add('miss');
       } else if (boardCell !== null) {
         if (boardElement.classList[0] === 'computer-board') {
-          cell.classList.add('divs');
+          cell.classList.remove('ship');
+        } else {
         }
         cell.classList.add('ship');
       }
@@ -44,26 +47,28 @@ function handlePlayerMove(row, col) {
     game.player2.gameboard
   );
 
-  if (result === 'Sunk') {
-    console.log('You sunk a ship!');
-  } else if (result === 'Hit') {
-    console.log('Hit!');
-  } else if (result === 'Miss') {
-    console.log('Miss!');
-  } else if ('Already Hit') {
-    
-  }
-
   // Check if game over
   if (game.player2.gameboard.isAllShipsSunk()) {
-    alert(`${game.currentPlayer.name} wins!`);
+    alert(`${playerName.innerText} wins!`);
   }
 }
 
-const playerName = document.querySelector('[data-player-name]');
-const name = prompt('ENTER YOUR NAME');
-playerName.innerText = name;
+const game = new Game('Player', 'Computer');
+const startBtn = document.querySelector('[data-start]');
 
-const game = new Game('Player 1', 'Computer');
-renderBoard(document.querySelector('.player-board'), game.player1.gameboard);
-renderBoard(document.querySelector('.computer-board'), game.player2.gameboard);
+startBtn.addEventListener('click', () => {
+  renderBoard(document.querySelector('.player-board'), game.player1.gameboard);
+  renderBoard(
+    document.querySelector('.computer-board'),
+    game.player2.gameboard
+  );
+});
+
+const restartBtn = document.querySelector('[data-restart]');
+restartBtn.addEventListener('click', () => {
+  renderBoard(document.querySelector('.player-board'), game.player1.gameboard);
+  renderBoard(
+    document.querySelector('.computer-board'),
+    game.player2.gameboard
+  );
+});

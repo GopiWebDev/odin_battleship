@@ -1,6 +1,8 @@
 import Player from './player';
 import Ship from './ship';
 
+const resultBox = document.querySelector('.results');
+
 class Game {
   constructor(player1 = 'Player', player2 = 'Computer') {
     this.player1 = new Player(player1);
@@ -75,6 +77,10 @@ class Game {
   playerMove(row, col) {
     if (this.isValidMove(row, col)) {
       const result = this.currentPlayer.attack(this.getOpponent(), row, col);
+      if (result === 'Already Hit') {
+        this.updateUI(row, col, 'Already Hit');
+        return;
+      }
       this.updateUI(row, col, result);
 
       if (this.getOpponent().gameboard.isAllShipsSunk()) {
@@ -100,7 +106,6 @@ class Game {
       const [row, col, result] = this.currentPlayer.randomAttack(
         this.getOpponent()
       );
-      this.updateUI(row, col, result);
       if (this.getOpponent().gameboard.isAllShipsSunk()) {
         this.endGame(this.currentPlayer.name);
       } else {
@@ -114,11 +119,11 @@ class Game {
   }
 
   updateUI(row, col, result) {
-    console.log(`Attack at [${row}, ${col}] resulted in ${result}`);
+    resultBox.innerText = `Attack at [${row}, ${col}] resulted in ${result}`;
   }
 
   endGame(winnerName) {
-    console.log(`Game Over! ${winnerName} wins!`);
+    resultBox.innerText = `Game Over! ${winnerName} wins!`;
   }
 }
 

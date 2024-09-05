@@ -4,9 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battleship Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Text:wght@900&display=swap"
+      rel="stylesheet"
+    />
   <script defer src="main.js"></script></head>
   <body>
-    <h1>Battleship Game</h1>
+    <h1>Battleship</h1>
+    <p class="results">Press start to begin</p>
+    <div class="buttons-section">
+      <button class="start-btn" data-start>Start</button>
+      <button class="restart-btn" data-restart>Restart</button>
+    </div>
     <div class="game-boards">
       <div class="player-section">
         <h2 data-player-name>Player</h2>
@@ -16,10 +27,6 @@
         <h2>Computer</h2>
         <div class="computer-board"></div>
       </div>
-    </div>
-    <div class="buttons-section">
-      <button data-start>Start</button>
-      <button data-restart>Restart</button>
     </div>
   </body>
 </html>

@@ -57,17 +57,14 @@ class GameBoard {
   }
 
   receiveAttack(row, col) {
-    // Check if the cell has already been attacked
     if (this.board[row][col] === 'O' || this.board[row][col] === 'X') {
       return 'Already Hit';
     }
 
-    // If the cell contains a ship part (not null and not previously attacked)
     if (
       this.board[row][col] !== null &&
       typeof this.board[row][col] === 'object'
     ) {
-      // Assuming ship parts are objects
       this.board[row][col] = 'X'; // Mark as hit
       let shipIndex = this.getShipCoordinates(row, col);
 
@@ -76,7 +73,7 @@ class GameBoard {
         ship.hit();
 
         if (ship.isSunk()) {
-          return 'Sunk';
+          return 'Sinking a ship';
         } else {
           return 'Hit';
         }
