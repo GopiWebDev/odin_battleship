@@ -26,7 +26,11 @@ function renderBoard(boardElement, gameboard) {
       } else if (boardCell === 'O') {
         cell.classList.add('miss');
       } else if (boardCell !== null) {
-        cell.classList.add('ship');
+        if (boardElement.classList[0] === 'computer-board') {
+          cell.classList.add('divs');
+        } else {
+          cell.classList.add('ship');
+        }
       }
 
       // Attach event listener for player moves
